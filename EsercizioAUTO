@@ -1,0 +1,109 @@
+
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+public class EsercizioAUTO2 {
+	public static String spenta = "si";
+	public static String ferma = "si";
+	public static 	ArrayList<String> desc = new ArrayList();
+	public static ArrayList<Integer> serb = new ArrayList<Integer>();
+	public static ArrayList<Integer> km_l = new ArrayList<Integer>();
+	static Scanner in = new Scanner(System.in);
+	static String ins;
+	static String ins1;
+	public static int serb() {
+		Random random = new Random();
+		return random.nextInt(60-35)+35;
+
+	}
+	public static int km_litro() {
+		Random random = new Random();
+		return random.nextInt(25-15)+15;
+
+	}
+	public static void descrizione() throws InterruptedException {
+		desc.add("Ferrari");
+		desc.add("Tesla");
+		desc.add("Lambo");
+		for (int i=0; i<3; i++) {
+			String car = desc.get(i);
+			Random ran = new Random();
+			int cap = ran.nextInt(60-35)+35;
+			int km = ran.nextInt(25-15)+15;
+			System.out.print("Macchina " + (i+1) + ": " + car + "! ");
+			System.out.println();
+			System.out.println("Capacità serbatoio " + car + " = " + cap );
+			System.out.println("Km con un litro " +car + " = " + km);
+			System.out.println();
+			serb.add(cap);
+			km_l.add(km);
+			Thread.sleep(2000);
+		}
+	}
+	public static void accensione() {
+		if ((ins.contentEquals("start")) && (spenta.equals("si")))
+		{
+			System.out.println("La " + desc.get(0) + " si accende.");
+			System.out.println("La " + desc.get(1) + " si accende.");
+			System.out.println("La " + desc.get(2) + " si accende.");
+			spenta="no";
+
+
+		}
+
+	}
+	public static void partenza() {
+		if ((ins1.contentEquals("go")))
+		{
+			ferma="no";	
+			
+			}
+		
+		else {
+			System.out.println("Le macchine hanno qualche problema...");
+		}
+		}
+		
+	public static void viaggio() {
+		for (int i=0; i<3; i++)
+		{
+		System.out.println(serb.get(i)*(km_l.get(i)) + " km percorsi dalla " + desc.get(i) + ".");
+		System.out.println("Le macchine si sono fermate.");
+		}
+	}
+	public static void spegnimento() {
+
+	}
+	public static void main(String[] args) throws InterruptedException {
+		descrizione();
+		ins = in.nextLine();
+		accensione();
+		if (spenta.contentEquals("no")) {
+			System.out.println("Tutte le macchine sono pronte.");
+			Thread.sleep(3000);
+			for (int i=3; i>0; i--) {
+				System.out.println(i);
+				Thread.sleep(1000);
+			}
+			ins1 = in.nextLine();
+			partenza();
+			if (ferma.contentEquals("no"));
+			{
+				System.out.println("Le macchine sono partite");
+			}
+			viaggio();
+			SortedSet set = new TreeSet();
+			for (int x=0; x<3; x++) {
+			set.add(desc.get(x));
+			}
+			
+		}
+		if (spenta.contentEquals("si")) {
+			System.out.println("Le macchine non si sono ancora accese.");
+		}
+	}
+
+}

@@ -1,0 +1,39 @@
+import java.util.Scanner;
+
+public class Esercizio02d {
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		String verso="";
+		String tipo ="";
+		boolean ok=false;
+		String animale = in.nextLine();
+		if(animale.contentEquals("Pecora")) {
+			tipo = "è un ovino";
+			verso ="bee";
+		}
+		else if (animale.contentEquals("Mucca")) {
+			tipo = "è un bovino";
+			verso ="muu";
+		}
+		else if (animale.contentEquals("Cane")) {
+			verso="woof";
+			ok=true;
+		}
+		else if (animale.contentEquals("Gatto")) {
+		verso="meow";
+		ok =true;
+		}
+		else {
+			System.out.println("ANIMALE NON IDENTIFICATO");
+
+		}
+		if (ok=true) {
+			System.out.println(tipo);
+		}
+		if (ok) {
+		System.out.println(verso);
+		}
+		in.close();
+	}
+
+}

@@ -1,0 +1,152 @@
+package jdbc;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class DB_Esercizio04c {
+	static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";   
+	static final String DB_URL = "jdbc:mysql://localhost/garage";
+	static final String USER = "root";  
+	static final String PASS = ""; 
+
+	public static void main(String[] args) { 
+		Connection conn = null; 
+		Statement stmt = null; 
+		PreparedStatement stmt1 = null; 
+		try{ 
+			Class.forName("com.mysql.cj.jdbc.Driver"); 
+			System.out.println("Connecting to database..."); 
+			conn = DriverManager.getConnection(DB_URL,USER,PASS); 
+			System.out.println("Creating statement..."); 
+			stmt = conn.createStatement(); 
+			String sql;
+			sql = "SELECT id, marca, modello, cv, data_immatricolazione, numero_posti FROM automobili";
+			ResultSet rs = stmt.executeQuery(sql);
+			String syso = "Inserisci numero: 1. Elenco | 2. Cerca marca | 3. Aggiungi auto | 4. Esporta su file | 5. Exit ";
+			String el = "1";
+			String cm = "2";
+			String aa = "3";
+			String esf = "4";
+			String ex = "5";
+			Scanner in = new Scanner(System.in);
+			String ins = ""; 
+			for (; !ins.contentEquals(ex);) 
+			{
+				System.out.println("\n" + syso);
+				ins = in.nextLine();
+				if (ins.contentEquals(el))
+				{
+					rs.absolute(0); // <------------------- x tornare al primo valore del db
+					while(rs.next()){ 
+
+						String marca = rs.getString("marca"); 
+						String modello = rs.getString("modello"); 
+						int np  = rs.getInt("numero_posti");  
+
+						System.out.print("Marca: " + marca );
+						System.out.print(", modello: " + modello);
+						System.out.print(", numero posti: " + np+ "\n");
+
+
+					}
+
+				} 
+				if (ins.contentEquals(cm)) {
+					rs.absolute(0); // <------------------- x tornare al primo valore del db
+					System.out.println("Inserisci marca");
+					String insmarca = in.nextLine();
+					while(rs.next()){ 
+						String marca = rs.getString("marca");
+						if(insmarca.contentEquals(marca)){
+							String modello = rs.getString("modello");
+							System.out.println("Modello: " + modello);
+							int np = rs.getInt("numero_posti");
+							System.out.println("Numero posti: " + np);
+						}
+					}
+				}
+				if (ins.contentEquals(aa)) {
+					System.out.println("Inserisci marca: ");
+					String insmarca = in.nextLine();
+					System.out.println("Inserisci modello: ");
+					String insmodello = in.nextLine();
+					System.out.println("Inserisci cv: ");
+					String inscv = in.nextLine();
+					System.out.println("Inserisci data immatricolazione: ");
+					String insdi = in.nextLine();
+					System.out.println("Inserisci numero posti: ");
+					String insnp = in.nextLine();
+					String sqli = "INSERT INTO garage.automobili (`marca`, `modello`, `cv`, `data_immatricolazione`, `numero_posti`) VALUES (?, ?, ?, ?, ?)";
+					stmt1 = conn.prepareStatement(sqli);
+					stmt1.setString(1, insmarca);
+					stmt1.setString(2, insmodello);
+					stmt1.setString(3, inscv);
+					stmt1.setString(4, insdi);
+					stmt1.setString(5, insnp);
+					stmt1.execute();
+					stmt1.close(); 
+				}
+				if (ins.contentEquals(esf))
+				{
+					rs.absolute(0); // <------------------- x tornare al primo valore del db
+					File file = new File("C:/windows/temp/garage"); 
+					file.createNewFile(); 
+					FileWriter writer = new FileWriter(file);
+					while(rs.next()){ 
+
+						String marca = rs.getString("marca"); 
+						String modello = rs.getString("modello"); 
+						int np  = rs.getInt("numero_posti");  
+
+						System.out.print("Marca: " + marca );
+						System.out.print(", modello: " + modello);
+						System.out.print(", numero posti: " + np+ "\n");
+						System.out.println("Scrivo il risultato in: " + "C:/windows/temp/garage" + "\n");
+
+						writer.write("Marca: " + marca );
+						writer.write(", modello: " + modello );
+						writer.write(", numero posti: " + np );
+						writer.write("\n");
+						writer.flush(); 
+
+					}
+					writer.close();
+				}
+			}
+			//STEP 6: Clean-up environment 
+			rs.close(); 
+			stmt.close(); 
+			conn.close(); 
+			in.close();
+		}catch(SQLException se){ 
+			//Handle errors for JDBC 
+			se.printStackTrace(); 
+		}catch(Exception e){ 
+			//Handle errors for Class.forName 
+			e.printStackTrace(); 
+		}finally{ 
+			//finally block used to close resources 
+			try{ 
+				if(stmt!=null)
+					stmt.close(); 
+			}catch(SQLException se2){ 
+			}// nothing we can do 
+			try{ 
+				if(conn!=null) 
+					conn.close(); 
+			}catch(SQLException se){ 
+				se.printStackTrace(); 
+			}//end finally try 
+
+		}//end try 
+
+		System.out.println("Goodbye!"); 
+	}//end main 
+}
